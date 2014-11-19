@@ -4,6 +4,8 @@ title: note about my github setup
 date: 2014-11-19 22:16:58
 ---
 
+https://gist.github.com/jexchan/2351996
+
 found this gist , and wanted to make sure it didn't disappear...
 there is a required modification to the remote url's as well that I 
 will add below..
@@ -16,6 +18,22 @@ I had to change the [remote "origin"] / url field in my local .git/config to use
         url = git@github.com-activehacker:activehacker/gfs.git
 
 Without that modification, git would just try to use my default ssh key.
+
+--still need to add custome clone host... 
+Instead of having to change the remote origin in the config after cloning, you can just use that custom Host variable on the git clone command instead.
+
+
+e.g.
+
+git clone git@github.com-activehacker:activehacker/gfs.git gfs_jexchan
+________________________^
+
+as oppose to:
+
+git clone git@github.com:activehacker/gfs.git gfs_jexchan
+
+that's the ticket!
+
 
 
 
