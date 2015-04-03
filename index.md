@@ -19,5 +19,7 @@ Recent Posts list:
   {% endfor %}
 </ul>
 
+
+
 ## To-Do
   I probably will not fork the theme, it seems to be ok for my purposes.
