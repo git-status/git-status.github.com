@@ -38,6 +38,6 @@ hotSpringServices.factory('Deal', ['$resource','$location',
   }]);
 
 hotSpringServices.factory('Springs', function($resource){
-    return $resource('http://0.0.0.0:4000/springs.json');
+    return $resource('springs.json');
  
 });
