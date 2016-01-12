@@ -93,7 +93,7 @@ hotSpringControllers.controller('HotSpringMapController', ['$scope', 'Springs', 
         $scope.staticMarker.coords = {latitude:position.coords.latitude,
                                            longitude:position.coords.longitude};
        $scope.staticMarker.options.title="your location";
-     $scope.staticMarker.icon= '/img/lodging-key.png';
+     $scope.staticMarker.icon= './img/lodging-key.png';
         $scope.displayYourLocation=true;
         console.log('found geolocation: '+$scope.staticMarker.coords);
 /*
@@ -189,7 +189,7 @@ hotSpringControllers.controller('HotSpringMapController', ['$scope', 'Springs', 
                     $scope.map.springMarkers.push({
                         id: spring.Id,
                         /* icon: 'bower_components/angular-google-maps/examples/assets/images/blue_marker.png',*/
-                        icon: '/img/lodging-key.png',
+                        icon: './img/lodging-key.png',
                         latitude: parseFloat(spring.Latitude),
                         longitude: -(spring.Longitude),
                         showWindow: false,
@@ -215,12 +215,12 @@ hotSpringControllers.controller('HotSpringMapController', ['$scope', 'Springs', 
                     geocoder.geocode( { 'address':stateName,'region': 'US'}, function(results, status) {
                         if (status == google.maps.GeocoderStatus.OK) {
 
-                            $scope.map.center={latitude: results[0].geometry.location.k,
-                                                longitude:results[0].geometry.location.D};
+                            $scope.map.center={latitude: results[0].geometry.location.lat(),
+                                                longitude:results[0].geometry.location.lng()};
                                                 console.log('mapCenter');
                                                 console.log($scope.map.center);
 
-                            $scope.map.control.refresh({latitude:results[0].geometry.location.k, longitude: results[0].geometry.location.D});
+                            $scope.map.control.refresh({latitude:results[0].geometry.location.lat(), longitude: results[0].geometry.location.lng()});
                          
                         } else {
                             console.log('Geocode was not successful for the following reason: ' + status);
