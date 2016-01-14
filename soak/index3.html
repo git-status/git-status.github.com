@@ -22,7 +22,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Hawt Spring finder!</a>
+          <a class="navbar-brand" href="#">Hot Spring finder!</a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul  class="nav navbar-nav">
@@ -68,7 +68,7 @@
                    <p ng-non-bindable><a href="https://duckduckgo.com/?q={{ (custom.SpringName + state).split(' ').join('+') }}" target="_blank">Search for more info on {{custom.SpringName}}</a></p>
                     <p ng-non-bindable>This is an info window at {{ latitude | number:id }}, {{ longitude | number:id }}!</p>
 
-                    <p class="muted">My marker will stay open when the window is popped up!</p>
+                    <p class="muted">Click for directions to {{ custom.SpringName }}</p>
                 </div>
             </ui-gmap-windows> 
         </ui-gmap-markers>
