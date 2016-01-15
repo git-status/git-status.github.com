@@ -366,7 +366,7 @@ hotSpringControllers.controller('HotSpringMapController', ['$scope', 'Springs', 
             //angular-google-map-container
             //gm-style
             //window.document.getElementsByClassName('gm-style')[0]
-            directionsDisplay.setMap($scope.map.control.getGMap());
+            directionsDisplay.setMap($scope.mapINstance);
            
             var mapConfig={
                     useMetres:false
