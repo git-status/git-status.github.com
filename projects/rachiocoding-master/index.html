@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en" ng-app="rachioApp">
+<title>Rachio</title>
+<meta charset="utf-8" />
+<meta content="width=device-width" name="viewport">
+<!-- <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet"> -->
+<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+</head>
+<style>
+</style>
+
+<body ng-controller="rachioCtrl">
+    <div class="navbar navbar-inverse" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#home">Rachio</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li ng-class="{active: isActive('/home') }"><a href="#home">Home</a></li>
+                </ul>
+            </div>
+            <!--/.nav-collapse -->
+        </div>
+    </div>
+    <div class="container">
+        <div class="starter-template">
+            <div>
+                Start zones invididually.
+                <h2>Device(s)</h2>
+                <ul>
+                    <li ng-repeat="device in devices"> {{ device.name }}
+                        <ul>
+                            <li ng-repeat="zone in device.zones | orderBy: 'zoneNumber'">{{ zone.name +" : " + zone.enabled }}Duration(s)
+                                <input type="text" ng-model="zone.runtime" />
+                                <input type="checkbox" ng-model="zone.enabled">
+                                <button ng-disabled="disableButtons" ng-click="startZone(zone)">Run</button>
+                            </li>
+                        </ul>
+                        <div>Start all zones
+                            <button ng-disabled="disableButtons" ng-click="startAllZones(device.zones)">Start All Zones</button>
+                        </div>
+                    </li>
+                </ul>
+                <div class="error">{{ errors }}</div>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src='bower_components/lodash/dist/lodash.js'></script>
+    <script>
+    var rachioApp = angular.module("rachioApp", []);
+    rachioApp.controller("rachioCtrl", function($scope) {
+        window.ra = $scope;
+
+        var baseUrl = 'https://api.rach.io/1';
+        var token = 'c3667b81-92a6-4913-b83c-64cc713cbc1e';
+
+        var personId;
+
+        $scope.person;
+        $scope.devices;
+        $scope.errors;
+        $scope.disableButtons=false;
+
+        $scope.startZone = function(zone) {
+            $scope.disableButtons=true;
+            $.ajax({
+                url: 'https://api.rach.io/1/public/zone/start',
+                dataType: 'json',
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                },
+                method: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    'id': zone.id,
+                    'duration': zone.runtime
+                }),
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader("Authorization", "Bearer c3667b81-92a6-4913-b83c-64cc713cbc1e")
+                },
+                success: function(data) {
+                    console.log('success'+data);
+                    location.reload();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log('error');
+                    console.log(textStatus);
+                     $scope.errors=JSON.parse(jqXHR.responseText);
+                }
+
+            });
+        };
+
+
+        $scope.startAllZones = function(zones) {
+            $scope.disableButtons=true;
+          var zoneData=[];
+          _.each(zones,function(zone){
+                zoneData.push({'id':zone.id, 'duration':zone.runtime,'sortOrder':zone.zoneNumber});
+          });
+          var zoneJson={"zones":zoneData};
+            $.ajax({
+                url: 'https://api.rach.io/1/public/zone/start_multiple',
+                dataType: 'json',
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                },
+                method: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(zoneJson),
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader("Authorization", "Bearer c3667b81-92a6-4913-b83c-64cc713cbc1e")
+                },
+                success: function(data) {
+                      console.log('success'+data);
+                    location.reload();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log('error');
+                    console.log(textStatus);
+                     $scope.errors=JSON.parse(jqXHR.responseText);
+                }
+
+            });
+        };
+
+
+        $.ajaxSetup({
+            'beforeSend': function(xhr) {
+                xhr.setRequestHeader('Authorization',
+                    'Bearer Bearer c3667b81-92a6-4913-b83c-64cc713cbc1e');
+            }
+        });
+
+        $.ajax({
+            url: 'https://api.rach.io/1/public/person/info',
+            dataType: 'json',
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            },
+            method: 'GET',
+            contentType: 'application/json',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer c3667b81-92a6-4913-b83c-64cc713cbc1e")
+            },
+            success: function(data) {
+                console.log(data);
+                personId = data.id;
+                //request person info to get device and zones...
+
+                $.ajax({
+                    url: 'https://api.rach.io/1/public/person/' + personId,
+                    dataType: 'json',
+                    crossDomain: true,
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    method: 'GET',
+                    contentType: 'application/json',
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader("Authorization", "Bearer c3667b81-92a6-4913-b83c-64cc713cbc1e")
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        $scope.person = data;
+                        process(data);
+                        $scope.devices = $scope.person.devices;
+                        $scope.$apply();
+
+
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.log('error');
+                        console.log(textStatus);
+                        $scope.errors=JSON.parse(jqXHR.responseText);
+                    }
+
+                });
+
+
+
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log('error');
+                $scope.errors=JSON.parse(jqXHR.responseText);
+            }
+
+        });
+
+        function process(data) {
+            console.log('processdata');
+            //alert(data);
+        };
+
+
+
+
+    });
+    </script>
+
+</body>
+
+</html>
