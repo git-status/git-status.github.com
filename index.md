@@ -1,6 +1,6 @@
 ---
 layout: page
-title: my github pasge
+title: my github page
 tagline: blogging on my git projects
 ---
 {% include JB/setup %}
@@ -21,4 +21,4 @@ Recent Posts list:
 
 
 ## To-Do
-  I probably will not fork the theme, it seems to be ok for my purposes.
+  Fix this site...
