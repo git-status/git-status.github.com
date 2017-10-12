@@ -1,6 +1,7 @@
 ---
 layout: page
 title: "Projects Page"
+tagline: "project page tagline here"
 description: "page with description of old projects"
 ---
 {% include JB/setup %}
